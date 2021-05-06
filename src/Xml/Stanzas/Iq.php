@@ -92,6 +92,9 @@ class Iq extends Stanza
         $query = "<query xmlns='urn:xmpp:ping'/>";
         $xml = "<iq type='get' id='{$this->uniqueId()}'>{$query}</iq>";
 
-        $this->socket->send($xml);
+        if($this->socket->send($xml) === false)
+        {
+            return false;
+        }
     }
 }

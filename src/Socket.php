@@ -49,12 +49,15 @@ class Socket
     public function send(string $xml)
     {
         try {
-            fwrite($this->connection, $xml);
+            $fwrite_ret = fwrite($this->connection, $xml);
+            if($fwrite_ret === 0)
+            {
+                throw new DeadSocket("Server gone away!");
+            }
             $this->options->getLogger()->logRequest(__METHOD__ . '::' . __LINE__ . " $xml");
-            //$this->checkSocketStatus();
         } catch (Exception $e) {
             $this->options->getLogger()->error(__METHOD__ . '::' . __LINE__ . " fwrite() failed " . $e->getMessage());
-            return;
+            return false;
         }
 
         $this->receive();
